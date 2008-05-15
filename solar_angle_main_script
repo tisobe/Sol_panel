@@ -1,4 +1,11 @@
 source /home/mta/.ascrc
+
+cd /data/mta/Script/Sol_panel/Exc
+rm -rf param
+mkdir param
 source /home/mta/bin/reset_param
 setenv PFILES "${PDIRS}:${SYSPFILES}"
-perl /data/mta/Script/Sol_panel/Script/solar_angle_master.perl
+set path = (/home/ascds/DS.release/bin/  $path)
+set path = (/home/ascds/DS.release/otsbin/  $path)
+
+perl /data/mta/MTA/bin/solar_angle_master.perl

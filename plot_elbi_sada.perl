@@ -7,7 +7,7 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: May 131313, 2008								#
+#	last update: May 15, 2008								#
 #												#
 #################################################################################################
 

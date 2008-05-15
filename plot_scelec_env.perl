@@ -7,7 +7,7 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: May 13, 2008								#
+#	last update: May 15, 2008								#
 #												#
 #################################################################################################
 
@@ -45,11 +45,12 @@ $oba_max	= 150.0;
 
 
 
-$file = $ARGV[0];		#--- e.g., Data/batt_full.dat
-$elbi_env   = $ARGV[1];
+$file       = $ARGV[0];		#--- e.g., Data_scelec/scelec_angle80
+$elbi_env   = $ARGV[1];		#--- e.g., scelec_angle80_elbi_env.dat
 $hrma_env   = $ARGV[2];
 $oba_env    = $ARGV[3];
 $elbv_param = $ARGV[4];
+
 chomp $file;
 chomp $elbi_env;
 chomp $elbv_env;
@@ -61,7 +62,7 @@ chomp $oba_env;
 @elbv     = ();		# LOAD BUS VOLTAGE
 @ohrmapwr = ();		# HRMA COMPUTED TOTAL POWER
 @oobapwr  = ();		# OBA COMPUTED TOTAL POWER
-$cnt   = 0;
+$cnt      = 0;
 
 open(FH, "$file");
 $j = 0;
@@ -85,7 +86,7 @@ while(<FH>){
 }
 close(FH);
 
-@xbin = @time;
+@xbin  = @time;
 $total = $cnt;
 $color = 1;
 $symbol= 2;
@@ -1020,7 +1021,7 @@ sub least_fit {
 }
 
 #########################################################################
-#########################################################################
+### afunc: linear + sine wave + exp decay model                       ###
 #########################################################################
 
 sub afunc{

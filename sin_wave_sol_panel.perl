@@ -6,12 +6,12 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: May 08, 2008						#
+#		last update: May 15, 2008						#
 #											#
 #########################################################################################
 
 #
-#---- this script fit a straight line + sine function on a data
+#---- this script fit a straight line + sine function + exp decay  on a data
 #---- the initial condition is very important; it goes away very easily.
 #
 
@@ -64,10 +64,10 @@ while(<FH>){
 		next OUTER;
 	}
 	$j = 0;
-#	if($atemp[0] > 2003 && $atemp[1] > 314){ #---- condition for soloar pannel
+#
+#--- removing the extreme outlier
+#
 	if($atemp[1] > 314){
-#	if($atemp[0] > 2003 && $atemp[1] > 28){
-#	if($atemp[1] > 28){
 		push(@xbin, $atemp[0]);
 		push(@ybin, $atemp[1]);
 		$ntotal++;
@@ -89,12 +89,12 @@ robust_fit();
 #--- set initial guess for the model fit parameters
 #
 
-$a[0] = $int;
-$a[1] = $slope;
-$a[2] = -1.0;
-$a[3] = 6.3;
-$a[4] = 4.6;
-$a[5] = -0.0005;
+$a[0] = $int;		#--- liner intercept coeff
+$a[1] = $slope;		#--- linear slope coeff
+$a[2] = -1.0;		#--- sine amplitude
+$a[3] = 6.3;		#--- sine freq
+$a[4] = 4.6;		#--- sine shift
+$a[5] = -0.0005;	#--- exp decay 
 
 #
 #--- $nterms is the numbers of paramters

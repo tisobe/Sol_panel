@@ -9,7 +9,7 @@
 #													#
 #		author: t. isobe (tisobe@cfa.harvard.edu)						#
 #													#
-#		last update: May 7, 2008								#
+#		last update: May 15, 2008								#
 #													#
 #########################################################################################################
 
@@ -29,7 +29,7 @@ $data_dir   = $atemp[1];
 $html_dir   = $atemp[2];
 $main_dir   = $atemp[3];
 
-if($data_dir eq '');
+if($data_dir eq ''){
 	$data_dir = './';
 }
 
@@ -57,12 +57,19 @@ $input = `ls $data_dir/Ind_data_files/angle*.dat`;
 $last  = pop (@list);
 
 open(FH, "$last");
+OUTER:
 while(<FH>){
 	chomp $_;
 	@atemp = split(/\s+/, $_);
-	if($atemp[0] =~ /\d/){			#---- this is format dependent; make sure that you do not change it!!
+	if($atemp[0] =~ /\d/){		#---- this is format dependent; make sure that you do not change it!!
+		if($atemp[1] < 48902399){
+			next OUTER;
+		}
 		$last_date = $atemp[1];
 	}elsif($atemp[2] =~ /\d/){
+		if($atemp[2] < 48902399){
+			next OUTER;
+		}
 		$last_date = $atemp[2];
 	}
 }
@@ -145,113 +152,158 @@ sub extract_data{
 #--- extract data using dataseeker
 #
 	system("dataseeker.pl infile=test outfile=temp.fits  search_crit=\"columns=pt_suncent_ang timestart=$start timestop=$stop\" "); 
-	system("dmcopy \"temp.fits[cols time,pt_suncent_ang]\" outfile=temp2.fits");
-	if($chk == 0){
-		system("cp $zip_file $old_file");
-		system("gzip -d $zip_file");
-		system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
-		system("mv zout.fits $out_file");
-		system("rm temp.fits temp2.fits");
-	}else{
-		system("mv temp2.fits $out_file");
-		system("rm temp.fits");
+#
+#--- check whether there is any new data, first check whether the actually the data file is created
+#
+	$dat_yes = 0;
+	$test = `ls `;
+	if($test !~ /temp.fits/){
+		open(OUT2,">extract_test");
+		print OUT2 "0";
+		close(OUT2);
+		exit 1;
 	}
+	system("dmlist temp.fits opt=data > test_out");
+	open(FH, "test_out");
+	OUTER:
+	while(<FH>){
+		chomp $_;
+		@atemp = split(/\s+/, $_);
+		if($atemp[2] =~ /\d/){
+			$data_yes++;
+			last OUTER;
+		}
+	}	
+	close(FH);
+	system("rm test_out");
+
+#
+#--- notify the main script that there is no new data
+#
+	if($data_yes == 0){
+		open(OUT2,">extract_test");
+		print OUT2 "0";
+		close(OUT2);
+		system("rm test");
+		exit 1;
+#
+#--- if there are new data, continue the analysis
+#
+	}else{
+		system("dmcopy \"temp.fits[cols time,pt_suncent_ang]\" outfile=temp2.fits");
+		if($chk == 0){
+			system("cp $zip_file $old_file");
+			system("gzip -d $zip_file");
+			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
+			system("mv zout.fits $out_file");
+			system("rm temp.fits temp2.fits");
+		}else{
+			system("mv temp2.fits $out_file");
+			system("rm temp.fits");
+		}
 
 #
 #--- convert the file into ascii file
 #
-	$line = "$out_file".'[cols time,pt_suncent_ang]';
-	system("dmlist \"$line\" opt=data > $txt_file");
-	system("gzip $out_file");
+		$line = "$out_file".'[cols time,pt_suncent_ang]';
+		system("dmlist \"$line\" opt=data > $txt_file");
+		system("gzip $out_file");
 
 #
 #--- Solar Panel: set a few file names ----------------------------------------------------
 #
-	$out_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.fits';
-	$zip_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.fits.gz';
-	$old_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.fits.gz~';
-	$txt_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.dat';
+		$out_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.fits';
+		$zip_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.fits.gz';
+		$old_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.fits.gz~';
+		$txt_file = "$data_dir".'/Ind_data_files/solar_panel'."$yname".'.dat';
 #
 #--- extract data using dataseeker
 #
-	system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tmysada_avg,_tpysada_avg,_tsamyt_avg,_tsapyt_avg timestart=$start timestop=$stop\" "); 
-	system("dmcopy \"temp.fits[cols time,tmysada_avg,tpysada_avg,tsamyt_avg,tsapyt_avg]\" outfile=temp2.fits");
-	if($chk == 0){
-		system("cp $zip_file $old_file");
-		system("gzip -d $zip_file");
-		system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
-		system("mv zout.fits $out_file");
-		system("rm temp.fits temp2.fits");
-	}else{
-		system("mv temp2.fits $out_file");
-		system("rm temp.fits");
-	}
+		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tmysada_avg,_tpysada_avg,_tsamyt_avg,_tsapyt_avg timestart=$start timestop=$stop\" "); 
+		system("dmcopy \"temp.fits[cols time,tmysada_avg,tpysada_avg,tsamyt_avg,tsapyt_avg]\" outfile=temp2.fits");
+		if($chk == 0){
+			system("cp $zip_file $old_file");
+			system("gzip -d $zip_file");
+			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
+			system("mv zout.fits $out_file");
+			system("rm temp.fits temp2.fits");
+		}else{
+			system("mv temp2.fits $out_file");
+			system("rm temp.fits");
+		}
 
 #
 #--- convert the file into ascii file
 #
-	$line = "$out_file".'[cols time,tmysada_avg,tpysada_avg,tsamyt_avg,tsapyt_avg]';
-	system("dmlist \"$line\" opt=data > $txt_file");
-	system("gzip $out_file");
+		$line = "$out_file".'[cols time,tmysada_avg,tpysada_avg,tsamyt_avg,tsapyt_avg]';
+		system("dmlist \"$line\" opt=data > $txt_file");
+		system("gzip $out_file");
 
 #
 #--- SC Electric Power: set a few file names ----------------------------------------------------
 #
-	$out_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'.fits';
-	$zip_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'.fits.gz';
-	$old_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'.fits.gz~';
-	$txt_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'_data';
+		$out_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'.fits';
+		$zip_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'.fits.gz';
+		$old_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'.fits.gz~';
+		$txt_file = "$data_dir".'/Ind_data_files/scelec_'."$yname".'_data';
 #
 #--- extract data using dataseeker
 #
-	system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_elbi_avg,_elbv_avg,_obattpwr_avg,_ohrmapwr_avg,_oobapwr_avg  timestart=$start timestop=$stop\" "); 
-	system("dmcopy \"temp.fits[cols time,elbi_avg,elbv_avg,obattpwr_avg,ohrmapwr_avg,oobapwr_avg]\" outfile=temp2.fits");
-	if($chk == 0){
-		system("cp $zip_file $old_file");
-		system("gzip -d $zip_file");
-		system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
-		system("mv zout.fits $out_file");
-		system("rm temp.fits temp2.fits");
-	}else{
-		system("mv temp2.fits $out_file");
-		system("rm temp.fits");
-	}
+		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_elbi_avg,_elbv_avg,_obattpwr_avg,_ohrmapwr_avg,_oobapwr_avg  timestart=$start timestop=$stop\" "); 
+		system("dmcopy \"temp.fits[cols time,elbi_avg,elbv_avg,obattpwr_avg,ohrmapwr_avg,oobapwr_avg]\" outfile=temp2.fits");
+		if($chk == 0){
+			system("cp $zip_file $old_file");
+			system("gzip -d $zip_file");
+			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
+			system("mv zout.fits $out_file");
+			system("rm temp.fits temp2.fits");
+		}else{
+			system("mv temp2.fits $out_file");
+			system("rm temp.fits");
+		}
 
 #
 #--- convert the file into ascii file
 #
-	$line = "$out_file".'[cols time,elbi_avg,elbv_avg,obattpwr_avg,ohrmapwr_avg,oobapwr_avg]';
-	system("dmlist \"$line\" opt=data > $txt_file");
-	system("gzip $out_file");
-
+		$line = "$out_file".'[cols time,elbi_avg,elbv_avg,obattpwr_avg,ohrmapwr_avg,oobapwr_avg]';
+		system("dmlist \"$line\" opt=data > $txt_file");
+		system("gzip $out_file");
+	
 #
 #--- Fine Sensor: set a few file names ----------------------------------------------------
 #
-	$out_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.fits';
-	$zip_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.fits.gz';
-	$old_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.fits.gz~';
-	$txt_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.dat';
+		$out_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.fits';
+		$zip_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.fits.gz';
+		$old_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.fits.gz~';
+		$txt_file = "$data_dir".'/Ind_data_files/sensor'."$yname".'.dat';
 #
 #--- extract data using dataseeker
 #
-	system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tfssbkt1_avg,_tfssbkt2_avg,_tpc_fsse_avg  timestart=$start timestop=$stop\" "); 
-	system("dmcopy \"temp.fits[cols time,tfssbkt1_avg,tfssbkt2_avg,tpc_fsse_avg]\" outfile=temp2.fits");
-	if($chk == 0){
-		system("cp $zip_file $old_file");
-		system("gzip -d $zip_file");
-		system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
-		system("mv zout.fits $out_file");
-		system("rm temp.fits temp2.fits");
-	}else{
-		system("mv temp2.fits $out_file");
-		system("rm temp.fits");
-	}
+		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tfssbkt1_avg,_tfssbkt2_avg,_tpc_fsse_avg  timestart=$start timestop=$stop\" "); 
+		system("dmcopy \"temp.fits[cols time,tfssbkt1_avg,tfssbkt2_avg,tpc_fsse_avg]\" outfile=temp2.fits");
+		if($chk == 0){
+			system("cp $zip_file $old_file");
+			system("gzip -d $zip_file");
+			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
+			system("mv zout.fits $out_file");
+			system("rm temp.fits temp2.fits");
+		}else{
+			system("mv temp2.fits $out_file");
+			system("rm temp.fits");
+		}
 #
 #--- convert the file into ascii file
 #
-	$line = "$out_file".'[cols time,tfssbkt1_avg,tfssbkt2_avg,tpc_fsse_avg]';
-	system("dmlist \"$line\" opt=data > $txt_file");
-	system("gzip $out_file");
+		$line = "$out_file".'[cols time,tfssbkt1_avg,tfssbkt2_avg,tpc_fsse_avg]';
+		system("dmlist \"$line\" opt=data > $txt_file");
+		system("gzip $out_file");
+#
+#--- notify the main script that there are new data
+#
+		open(OUT2,">extract_test");
+		print OUT2 "10000";
+		close(OUT2);
+	}
 }
 
 ##############################################################################

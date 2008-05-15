@@ -5,9 +5,10 @@ and fine sensor temperature evolution along the time.
 ########
 cron job
 ########
-The master script is run once a month on 3rd on rhodes by a user mta. This is because
+The master script is run once a month on 2nd on rhodes by a user mta. This is because
 dataseeker does not work well if it is not called from rhodes (and a user mta). 
 
+0 3 2 * * cd /data/mta/Script/Sol_panel/Exc; /data/mta/MTA/bin/solar_angle_wrap_script > $HOME/Logs/solar_angle_temp 2>&1
 
 #########
 Directies
@@ -47,6 +48,17 @@ Plots:				all plots are saved here
 ########
 Scripts
 ########
+
+-----------------------
+solar_angle_wrap_script
+-----------------------
+This is a wrap script to run solar_angle_main_script
+
+-----------------------
+solar_angle_main_script
+-----------------------
+this script sets up the environment, and run perl script solar_angle_master.perl
+
 -----------------------
 solar_angle_master.perl
 -----------------------

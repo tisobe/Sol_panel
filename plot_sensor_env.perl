@@ -7,7 +7,7 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: May 13, 2007								#
+#	last update: May 15, 2007								#
 #												#
 #################################################################################################
 
@@ -43,10 +43,11 @@ $tpc_opmax	= 294.1;
 #---- finish settings
 #-------------------------------------------------------
 
-$file = $ARGV[0];		#--- e.g., Data/batt_full.dat
-$tfssbkt1_env = $ARGV[1];
+$file         = $ARGV[0];	#--- e.g., Data/Data_sensor/sensor_angle80
+$tfssbkt1_env = $ARGV[1];	#--- e.g., sensor_angle80_tfssbkt1_env.dat
 $tfssbkt2_env = $ARGV[2];
 $tpc_fsse_env = $ARGV[3];
+
 chomp $file;
 chomp $tfssbkt1_env;
 chomp $tfssbkt2_env;
@@ -58,12 +59,12 @@ chomp $tpc_fsse_env;
 @tpc_fsse  = ();		# FSSE TEMP (BTWN UNITS)
 $cnt       = 0;
 
-open(FH, "$file");
-
 #
 #---- read data
 #---- use every 60th data point to keep the plot clean
 #
+
+open(FH, "$file");
 
 $j = 0;
 OUTER:
@@ -923,7 +924,7 @@ sub least_fit {
 }
 
 #########################################################################
-#########################################################################
+### afunc: linear + sine wave + exp decay model                       ###
 #########################################################################
 
 sub afunc{

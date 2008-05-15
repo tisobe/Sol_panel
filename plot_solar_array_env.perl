@@ -7,7 +7,7 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: May 13, 2008								#
+#	last update: May 15, 2008								#
 #												#
 #################################################################################################
 
@@ -47,12 +47,12 @@ $solapy_opmax	= 330.2;
 #---- finish settings
 #-------------------------------------------------------
 
-$file = $ARGV[0];		#--- e.g., Data/batt_full.dat
-
-$sadany_env   = $ARGV[1];
+$file 	      = $ARGV[0];	#--- e.g., $data_dir/Data/Data_solar_panel/solar_panel_angle80
+$sadany_env   = $ARGV[1];	#--- e.g., solar_panel_angle80_sadany_evn.dat
 $sadapy_env   = $ARGV[2];
 $solany_param = $ARGV[3];
 $solapy_param = $ARGV[4];
+
 chomp $file;
 chomp $sadany_env;
 chomp $sadapy_env;
@@ -66,12 +66,12 @@ chomp $solapy_param;
 @solapy = ();		# Solar array +y
 $cnt   = 0;
 
-open(FH, "$file");
-
 #
 #---- read data
 #---- use every 60th data point to keep the plot clean
 #
+
+open(FH, "$file");
 
 $j = 0;
 OUTER:
@@ -1009,7 +1009,7 @@ sub least_fit {
 
 
 #########################################################################
-#########################################################################
+### afunc: liear + sine wave + exp decay model                        ###
 #########################################################################
 
 sub afunc{

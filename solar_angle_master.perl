@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: May 14, 2008							#
+#		last update: May 15, 2008							#
 #												#
 #################################################################################################
 
@@ -15,6 +15,7 @@
 #
 
 $script_dir = '/data/mta/MTA/bin/';
+###$script_dir = '/data/mta/Script/Sol_panel/Sol_panel_script/';
 $data_dir   = '/data/mta/Script/Sol_panel/Data/';
 $html_dir   = '/data/mta/www/mta_sol_panel/';
 $main_dir   = '/data/mta/Script/Sol_panel/';
@@ -38,7 +39,20 @@ $uyday++;
 #--- extract data using dataseeker
 #
 
-system("perl  $script/extract_data_from_dataseek.perl");
+system("perl  $script_dir/extract_data_from_dataseek.perl");
+
+#
+#--- check whether any new data is extracted. if not, terminate the procedure.
+#
+
+$test =`cat extract_test`;
+chomp $test;
+if($test == 0){
+	system("rm extract_test");
+	print "\n\t\tNo new data. Exiting...\n\n";
+	exit 1;
+}
+system("rm extract_test");
 
 #
 #--- extract solar panel data
@@ -89,7 +103,7 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 
 system("perl $script_dir/sensor_angle_comb.perl $this_year");
 system("perl $script_dir/sep_col_sensor.perl");
-system("perl $script/find_env_sensor.perl");
+system("perl $script_dir/find_env_sensor.perl");
 
 foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name1 = "$data_dir".'/Data_sensor/sensor_angle'."$angle";
@@ -118,6 +132,10 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 
 system("rm pgplot.ps");
 
+#
+#--- update the html page (date of update only)
+#
+
 $date = `date`;
 $line = "Last Update: $date";
 
@@ -125,7 +143,7 @@ open(FH, "$html_dir/solarpanel.html");
 open(OUT, ">temp");
 while(<FH>){
 	chomp $_;
-	if($_ =~ /Last Updated/){
+	if($_ =~ /Last Update/){
 		print OUT "$line\n";
 	}else{
 		print OUT "$_\n";
