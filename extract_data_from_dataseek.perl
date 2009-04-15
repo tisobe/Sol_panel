@@ -9,7 +9,7 @@
 #													#
 #		author: t. isobe (tisobe@cfa.harvard.edu)						#
 #													#
-#		last update: May 15, 2008								#
+#		last update: Apr 15, 2009								#
 #													#
 #########################################################################################################
 
@@ -87,12 +87,12 @@ $last_ydate = time1998_to_ydate($last_date);
 #
 
 $start = $last_ydate;
-$chk   = 0;			#---- checking whether we need to extract data over two different years.
+$chk   = 0;
+$ychk  = 0;			#---- checking whether we need to extract data over two different years.
 
 #
 #--- if the last update was in the last year, fill up the rest of the year
 #
-
 
 if($btemp[0] < $this_year){
 
@@ -104,6 +104,7 @@ if($btemp[0] < $this_year){
 #
 #--- sub to extract all data we need from dataseeker
 #
+	$ychk = 1;
 	extract_data();
 
 #
@@ -131,6 +132,7 @@ if($file_chk !~ /$zip_file/){
 	$start = "$this_year".":001:00:00:00";
 	$chk++;
 }
+$ychk = 0;
 extract_data();
 
 system("rm test");
@@ -158,10 +160,15 @@ sub extract_data{
 	$dat_yes = 0;
 	$test = `ls `;
 	if($test !~ /temp.fits/){
-		open(OUT2,">extract_test");
-		print OUT2 "0";
-		close(OUT2);
-		exit 1;
+#
+#--- if the period is over two years, check second year before exiting
+#
+		if($ychk == 0){
+			open(OUT2,">extract_test");
+			print OUT2 "0";
+			close(OUT2);
+			exit 1;
+		}
 	}
 	system("dmlist temp.fits opt=data > test_out");
 	open(FH, "test_out");
@@ -181,11 +188,13 @@ sub extract_data{
 #--- notify the main script that there is no new data
 #
 	if($data_yes == 0){
-		open(OUT2,">extract_test");
-		print OUT2 "0";
-		close(OUT2);
-		system("rm test");
-		exit 1;
+		if($ychk == 0){
+			open(OUT2,">extract_test");
+			print OUT2 "0";
+			close(OUT2);
+			system("rm test");
+			exit 1;
+		}
 #
 #--- if there are new data, continue the analysis
 #
