@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: May 7, 2008							#
+#		last update: Apr 21, 2009							#
 #												#
 #################################################################################################
 
@@ -102,41 +102,70 @@ for($year = 2000; $year <= $this_year; $year++){
 	close(FH);
 
 #
-#-- cycle around data for each solar angle interval 
+#-- find matched time
 #
-	for($j = 0; $j < 7; $j++){
-		$angle1 = 40 + 20 * $j;
-		$angle2 = $angle1 + 20;
-	
-		$out_file = './sensor_angle'."$angle1";
-		open(OUT, ">>$out_file");
-	
-		$m = 0;
-		OUTER2:
-		for($k = 0; $k < $cnt; $k++){
-			if($tfssbkt1[$k] !~ /\d/ || $tfssbkt2[$k] !~ /\d/ || $tpc_fsse[$k] !~ /\d/){
-				next OUTER2;
-			}
-
-			if($time[$m] < $time2[$k]){
-				while($time[$m] < $time2[$k]){
-					$m++;
-				}
-			}elsif($time[$m] > $time2[$k]){
-				while($time[$m] > $time2[$k]){
-					$m--;
-				}
-			}
-
-			if($angle[$m] > $angle1 && $angle[$m] <= $angle2){
-
-				$year_time = sec1998_to_fracyear($time2[$k]);
-
-				print OUT "$year_time\t$tfssbkt1[$k]\t$tfssbkt2[$k]\t$tpc_fsse[$k]\t$angle[$m]\n";
-			}
-			$m++;
+	$m = 0;
+	OUTER2:
+	for($k = 0; $k < $cnt; $k++){
+		if($tfssbkt1[$k] !~ /\d/ || $tfssbkt2[$k] !~ /\d/ || $tpc_fsse[$k] !~ /\d/){
+			next OUTER2;
 		}
+
+		if($time[$m -1] < $time2[$k] && $time[$m] >= $time2[$k]){
+		}elsif($time[$m] < $time2[$k]){
+			OUTER3:
+			while($time[$m] < $time2[$k]){
+				$m++;
+				if($time[$m -1] < $time2[$k] && $time[$m] >= $time2[$k]){
+					last OUTER3;
+				}
+				if($m > $cnt){
+					last OUTER2;
+				}
+			}
+		}elsif($time[$m] > $time2[$k]){
+			OUTER3:
+			while($time[$m] > $time2[$k]){
+				$m--;
+				if($time[$m -1] < $time2[$k] && $time[$m] >= $time2[$k]){
+					last OUTER3;
+				}
+				if($m < 0){
+					$m = 0;
+					next OUTER2;
+				}
+			}
+		}
+
+                if($angle[$m] > 40  && $angle[$m] <= 60){
+                        open(OUT, ">>./sensor_angle40");
+
+                }elsif($angle[$m] > 60  && $angle[$m] <= 80){
+                        open(OUT, ">>./sensor_angle60");
+
+                }elsif($angle[$m] > 80  && $angle[$m] <= 100){
+                        open(OUT, ">>./sensor_angle80");
+
+                }elsif($angle[$m] > 100  && $angle[$m] <= 120){
+                        open(OUT, ">>./sensor_angle100");
+
+                }elsif($angle[$m] > 120  && $angle[$m] <= 140){
+                        open(OUT, ">>./sensor_angle120");
+
+                }elsif($angle[$m] > 140  && $angle[$m] <= 160){
+                        open(OUT, ">>./sensor_angle140");
+
+                }elsif($angle[$m] > 160  && $angle[$m] <= 180){
+                        open(OUT, ">>./sensor_angle160");
+
+                }
+
+
+		$year_time = sec1998_to_fracyear($time2[$k]);
+
+		print OUT "$year_time\t$tfssbkt1[$k]\t$tfssbkt2[$k]\t$tpc_fsse[$k]\t$angle[$m]\n";
 		close(OUT);
+		$m++;
 	}
 }
 

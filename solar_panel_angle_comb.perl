@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: May 12, 2008							#
+#		last update: Apr 21, 2009							#
 #												#
 #################################################################################################
 
@@ -105,42 +105,70 @@ for($year = 2000; $year <= $this_year; $year++){
 	close(FH);
 
 #
-#-- cycle around data for each solar angle interval 
+#-- find matched time interval
 #
-	for($j = 0; $j < 7; $j++){
-		$angle1 = 40 + 20 * $j;
-		$angle2 = $angle1 + 20;
-	
-		$out_file = './solar_panel_angle'."$angle1";
-		open(OUT, ">>$out_file");
-	
-		$m = 0;
-		OUTER2:
-		for($k = 0; $k < $cnt2; $k++){
-			if($tmysada[$k] !~ /\d/ || $tpysada[$k] !~ /\d/ || $tsamyt[$k] !~ /\d/ 
-				|| $tsapyt[$k] !~ /\d/ || $angle[$k] !~ /\d/){
-				next OUTER2;
-			}
-
-			if($time[$m] < $time2[$k]){
-				while($time[$m] < $time2[$k]){
-					$m++;
-				}
-			}elsif($time[$m] > $time2[$k]){
-				while($time[$m] > $time2[$k]){
-					$m--;
-				}
-			}
-
-			if($angle[$m] > $angle1 && $angle[$m] <= $angle2){
-
-				$year_time = sec1998_to_fracyear($time2[$k]);
-
-				print OUT "$year_time\t$tmysada[$k]\t$tpysada[$k]\t$tsamyt[$k]\t$tsapyt[$k]\t$angle[$m]\n";
-			}
-			$m++;
+	$m = 0;
+	OUTER2:
+	for($k = 0; $k < $cnt2; $k++){
+		if($tmysada[$k] !~ /\d/ || $tpysada[$k] !~ /\d/ || $tsamyt[$k] !~ /\d/ 
+			|| $tsapyt[$k] !~ /\d/ || $angle[$k] !~ /\d/){
+			next OUTER2;
 		}
+
+		if($time[$m -1] < $time2[$k] && $time[$m] >= $time2[$k]){
+		}elsif($time[$m] < $time2[$k]){
+			OUTER3:
+			while($time[$m] < $time2[$k]){
+				$m++;
+				if($time[$m -1] < $time2[$k] && $time[$m] >= $time2[$k]){
+					last OUTER3;
+				}
+				if($m > $cnt){
+					last OUTER2;
+				}
+			}
+		}elsif($time[$m] > $time2[$k]){
+			OUTER3:
+			while($time[$m] > $time2[$k]){
+				$m--;
+				if($time[$m -1] < $time2[$k] && $time[$m] >= $time2[$k]){
+					last OUTER3;
+				}
+				if($m < 0){
+					$m = 0;
+					next OUTER2;
+				}
+			}
+		}
+
+                if($angle[$m] > 40  && $angle[$m] <= 60){
+                        open(OUT, ">>./solar_panel_angle40");
+
+                }elsif($angle[$m] > 60  && $angle[$m] <= 80){
+                        open(OUT, ">>./solar_panel_angle60");
+
+                }elsif($angle[$m] > 80  && $angle[$m] <= 100){
+                        open(OUT, ">>./solar_panel_angle80");
+
+                }elsif($angle[$m] > 100  && $angle[$m] <= 120){
+                        open(OUT, ">>./solar_panel_angle100");
+
+                }elsif($angle[$m] > 120  && $angle[$m] <= 140){
+                        open(OUT, ">>./solar_panel_angle120");
+
+                }elsif($angle[$m] > 140  && $angle[$m] <= 160){
+                        open(OUT, ">>./solar_panel_angle140");
+
+                }elsif($angle[$m] > 160  && $angle[$m] <= 180){
+                        open(OUT, ">>./solar_panel_angle160");
+
+                }
+
+		$year_time = sec1998_to_fracyear($time2[$k]);
+
+		print OUT "$year_time\t$tmysada[$k]\t$tpysada[$k]\t$tsamyt[$k]\t$tsapyt[$k]\t$angle[$m]\n";
 		close(OUT);
+		$m++;
 	}
 }
 
