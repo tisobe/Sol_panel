@@ -56,7 +56,7 @@
 #											#
 #	author: t. isobe (tisobe@cfa.harvard.edu)					#
 #											#
-#	last update: 05/09/2008								#
+#	last update: 08/24/2010								#
 #											#
 #########################################################################################
 
@@ -76,9 +76,10 @@ $nodrop = $ARGV[5];		#---- if this one is entired, all data will be used
 chomp $file;
 chomp $arange;
 chomp $step;
-chomp $nterm;
+chomp $nterms;
 chomp $outfile;
 chomp $nodrop;
+
 #
 #-- small help for someone does not know...
 #
