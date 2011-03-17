@@ -9,3 +9,9 @@ set path = (/home/ascds/DS.release/bin/  $path)
 set path = (/home/ascds/DS.release/otsbin/  $path)
 
 perl /data/mta/MTA/bin/solar_angle_master.perl
+
+chgrp mtagroup /data/mta/Script/Sol_panel/Data/*
+chgrp mtagroup /data/mta/Script/Sol_panel/Data/*/*
+
+chgrp mtagroup /data/mta_www/mta_sol_panel/*
+chgrp mtagroup /data/mta_www/mta_sol_panel/Plots/*
