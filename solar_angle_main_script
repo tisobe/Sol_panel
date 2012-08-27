@@ -1,6 +1,9 @@
+setenv HEADAS /soft/lheasoft/headas/x86_64-pc-linux;
+source $HEADAS/headas-init.csh
+
 source /home/mta/.ascrc
 
-cd /data/mta/Script/Sol_panel/Exc
+cd /data/mta/Script/Sol_panel_linux/Exc
 rm -rf param
 mkdir param
 source /home/mta/bin/reset_param
@@ -8,7 +11,7 @@ setenv PFILES "${PDIRS}"
 set path = (/home/ascds/DS.release/bin/  $path)
 set path = (/home/ascds/DS.release/otsbin/  $path)
 
-perl /data/mta/MTA/bin/solar_angle_master.perl
+perl /data/mta/Script/Sol_panel_linux/Sol_panel_script/solar_angle_master.perl
 
 chgrp mtagroup /data/mta/Script/Sol_panel/Data/*
 chgrp mtagroup /data/mta/Script/Sol_panel/Data/*/*

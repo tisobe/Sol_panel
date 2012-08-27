@@ -7,13 +7,25 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: Jul 15, 2009								#
+#	last update: Aug 27, 2012								#
 #												#
 #################################################################################################
 
 #----------------------------------------------------------
 #---- setting some quantities. these may change in future.
 #----------------------------------------------------------
+#
+#--- set directories
+#
+$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+open(FH, $dir_list);
+while(<FH>){
+    chomp $_;
+    @atemp = split(/\s+/, $_);
+    ${$atemp[0]} = $atemp[1];
+}
+close(FH);
+
 #
 #--- load bus current
 #
@@ -695,7 +707,7 @@ pgclos();
 
 $out_gif = "env_plot.gif";
 
-system("echo ''|gs -sDEVICE=ppmraw  -r128x128 -q -NOPAUSE -sOutputFile=-  ./pgplot.ps|pnmcrop|pnmflip -r270 |ppmtogif > $out_gif");
+system("echo ''|$op_dir/gs -sDEVICE=ppmraw  -r128x128 -q -NOPAUSE -sOutputFile=-  ./pgplot.ps|$op_dir/pnmcrop|$op_dir/pnmflip -r270 |$op_dir/ppmtogif > $out_gif");
 
 
 ########################################################

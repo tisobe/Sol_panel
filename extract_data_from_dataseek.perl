@@ -9,29 +9,21 @@
 #													#
 #		author: t. isobe (tisobe@cfa.harvard.edu)						#
 #													#
-#		last update: Apr 15, 2009								#
+#		last update: Aug 27, 2012								#
 #													#
 #########################################################################################################
 
 #
 #---set directory
 #
-
-open(FH, "./dir_list");
-@atemp = ();
+$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+open(FH, $dir_list);
 while(<FH>){
-	chomp $_;
-	push(@atemp, $_);
+    chomp $_;
+    @atemp = split(/\s+/, $_);
+    ${$atemp[0]} = $atemp[1];
 }
 close(FH);
-$script_dir = $atemp[0];
-$data_dir   = $atemp[1];
-$html_dir   = $atemp[2];
-$main_dir   = $atemp[3];
-
-if($data_dir eq ''){
-	$data_dir = './';
-}
 
 #
 #--- create a dummy file "test". this will be used by dataseeker

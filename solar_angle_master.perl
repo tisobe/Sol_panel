@@ -6,27 +6,21 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Dec 30, 2009							#
+#		last update: Aug 27, 2012							#
 #												#
 #################################################################################################
 
 #
 #--- set directory
 #
-
-$script_dir = '/data/mta/MTA/bin/';
-###$script_dir = '/data/mta/Script/Sol_panel/Sol_panel_script/';
-$data_dir   = '/data/mta/Script/Sol_panel/Data/';
-$html_dir   = '/data/mta/www/mta_sol_panel/';
-$main_dir   = '/data/mta/Script/Sol_panel/';
-
-open(OUT, ">dir_list");
-print OUT "$script_dir\n";
-print OUT "$data_dir\n";
-print OUT "$html_dir\n";
-print OUT "$main_dir\n";
-close(OUT);
-
+$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+open(FH, $dir_list);
+while(<FH>){
+    chomp $_;
+    @atemp = split(/\s+/, $_);
+    ${$atemp[0]} = $atemp[1];
+}
+close(FH);
 #
 #--- find today's date
 #
@@ -39,7 +33,7 @@ $uyday++;
 #--- extract data using dataseeker
 #
 
-system("/opt/local/bin/perl  $script_dir/extract_data_from_dataseek.perl");
+system("$op_dir/perl  $script_dir/extract_data_from_dataseek.perl");
 
 #
 #--- check whether any new data is extracted. if not, terminate the procedure.
@@ -58,10 +52,10 @@ system("rm extract_test");
 #--- extract solar panel data
 #
 
-system("/opt/local/bin/perl $script_dir/solar_panel_angle_comb.perl $this_year");
-system("/opt/local/bin/perl $script_dir/sep_col_solar_pan.perl");
-system("/opt/local/bin/perl $script_dir/find_env_solar_pan.perl");
-system("/opt/local/bin/perl $script_dir/fit_sin_for_sol_pan.perl");
+system("$op_dir/perl $script_dir/solar_panel_angle_comb.perl $this_year");
+system("$op_dir/perl $script_dir/sep_col_solar_pan.perl");
+system("$op_dir/perl $script_dir/find_env_solar_pan.perl");
+system("$op_dir/perl $script_dir/fit_sin_for_sol_pan.perl");
 
 foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name1 = "$data_dir".'/Data_solar_panel/solar_panel_angle'."$angle";
@@ -71,7 +65,7 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name5 = "$data_dir".'/Plot_data/solar_panel_angle'."$angle".'_tsapyt_sine_param';
 	$out   = "$html_dir".'/Plots/solar_panel_angle'."$angle".'.gif';
 
-	system("/opt/local/bin/perl $script_dir/plot_solar_array_env.perl $name1 $name2 $name3 $name4 $name5");
+	system("$op_dir/perl $script_dir/plot_solar_array_env.perl $name1 $name2 $name3 $name4 $name5");
 	system("mv env_plot.gif $out");
 }
 
@@ -79,10 +73,10 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 #--- extract spacecraft electric power data
 #
 
-system("/opt/local/bin/perl $script_dir/scelec_angle_comb.perl $this_year");
-system("/opt/local/bin/perl $script_dir/sep_col_scelec.perl");
-system("/opt/local/bin/perl $script_dir/find_env_scelec.perl");
-system("/opt/local/bin/perl $script_dir/fit_sin_for_scelec.perl");
+system("$op_dir/perl $script_dir/scelec_angle_comb.perl $this_year");
+system("$op_dir/perl $script_dir/sep_col_scelec.perl");
+system("$op_dir/perl $script_dir/find_env_scelec.perl");
+system("$op_dir/perl $script_dir/fit_sin_for_scelec.perl");
 
 foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name1 = "$data_dir".'/Data_scelec/scelec_angle'."$angle";
@@ -92,7 +86,7 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name5 = "$data_dir".'/Plot_data/scelec_angle'."$angle".'_elbv_sine_param';
 	$out   = "$html_dir".'/Plots/scelec_angle'."$angle".'.gif';
 
-	system("/opt/local/bin/perl $script_dir/plot_scelec_env.perl $name1 $name2 $name3 $name4 $name5");
+	system("$op_dir/perl $script_dir/plot_scelec_env.perl $name1 $name2 $name3 $name4 $name5");
 	system("mv env_plot.gif $out");
 }
 
@@ -101,9 +95,9 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 #--- extract fine sensor temperature data
 #
 
-system("/opt/local/bin/perl $script_dir/sensor_angle_comb.perl $this_year");
-system("/opt/local/bin/perl $script_dir/sep_col_sensor.perl");
-system("/opt/local/bin/perl $script_dir/find_env_sensor.perl");
+system("$op_dir/perl $script_dir/sensor_angle_comb.perl $this_year");
+system("$op_dir/perl $script_dir/sep_col_sensor.perl");
+system("$op_dir/perl $script_dir/find_env_sensor.perl");
 
 foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name1 = "$data_dir".'/Data_sensor/sensor_angle'."$angle";
@@ -112,7 +106,7 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name4 = "$data_dir".'/Data_sensor/sensor_angle'."$angle".'_tpc_fsse_env.dat';
 	$out   = "$html_dir".'/Plots/sensor_angle'."$angle".'.gif';
 
-	system("/opt/local/bin/perl $script_dir/plot_sensor_env.perl $name1 $name2 $name3 $name4");
+	system("$op_dir/perl $script_dir/plot_sensor_env.perl $name1 $name2 $name3 $name4");
 	system("mv env_plot.gif $out");
 }
 
@@ -125,7 +119,7 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 	$name2 = "$data_dir".'/Data_scelec/scelec_angle'."$angle".'_elbi.dat';
 	$out   = "$html_dir".'/Plots/sada_elbi_angle'."$angle".'.gif';
 
-	system("/opt/local/bin/perl $script_dir/plot_elbi_sada.perl $name1 $name2");
+	system("$op_dir/perl $script_dir/plot_elbi_sada.perl $name1 $name2");
 	system("mv solpan_elbv.gif $out");
 }
 
