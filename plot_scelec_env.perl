@@ -7,9 +7,23 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: Aug 27, 2012								#
+#	last update: Jan 09, 2013								#
 #												#
 #################################################################################################
+
+$file       = $ARGV[0];         #--- e.g., Data_scelec/scelec_angle80
+$elbi_env   = $ARGV[1];         #--- e.g., scelec_angle80_elbi_env.dat
+$hrma_env   = $ARGV[2];
+$oba_env    = $ARGV[3];
+$elbv_param = $ARGV[4];
+$comp_test  = $ARGV[5];		#--- test case this will be "test"
+
+chomp $file;
+chomp $elbi_env;
+chomp $elbv_env;
+chomp $hrma_env;
+chomp $oba_env;
+chomp $comp_test;
 
 #----------------------------------------------------------
 #---- setting some quantities. these may change in future.
@@ -17,7 +31,13 @@ use PGPLOT;
 #
 #--- set directories
 #
-$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+if($comp_test =~ /test/i){
+#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+}else{
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+}
+
 open(FH, $dir_list);
 while(<FH>){
     chomp $_;
@@ -55,19 +75,6 @@ $oba_max	= 150.0;
 #---- finish settings
 #-------------------------------------------------------
 
-
-
-$file       = $ARGV[0];		#--- e.g., Data_scelec/scelec_angle80
-$elbi_env   = $ARGV[1];		#--- e.g., scelec_angle80_elbi_env.dat
-$hrma_env   = $ARGV[2];
-$oba_env    = $ARGV[3];
-$elbv_param = $ARGV[4];
-
-chomp $file;
-chomp $elbi_env;
-chomp $elbv_env;
-chomp $hrma_env;
-chomp $oba_env;
 
 @time     = ();
 @elbi     = ();		# LOAD BUS CURRENT

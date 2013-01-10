@@ -6,21 +6,9 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Aug 27, 2012							#
+#		last update: Jan 10, 2013							#
 #												#
 #################################################################################################
-
-#
-#---set directory
-#
-$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
-open(FH, $dir_list);
-while(<FH>){
-    chomp $_;
-    @atemp = split(/\s+/, $_);
-    ${$atemp[0]} = $atemp[1];
-}
-close(FH);
 
 #
 #--- read the latest year
@@ -30,6 +18,32 @@ $this_year = $ARGV[0];
 chomp $this_year;
 
 #
+#--- test case; set this "test"
+#
+
+$comp_test = $ARGV[1];
+chomp $comp_test;
+
+#
+#--- set directory
+#
+if($comp_test =~ /test/i){
+#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+	$begin_year = 2010;
+}else{
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+	$begin_year = 2000;
+}
+
+open(FH, $dir_list);
+while(<FH>){
+    chomp $_;
+    @atemp = split(/\s+/, $_);
+    ${$atemp[0]} = $atemp[1];
+}
+close(FH);
+#
 #--- clean up the working directory; remove files named "solar_panel_angle*"
 #
 $check = `ls `;
@@ -37,7 +51,7 @@ if($check =~ /solar_panel_angle/){
 	system("rm solar_panel_angle*0");
 }
 
-for($year = 2000; $year <= $this_year; $year++){
+for($year = $begin_year; $year <= $this_year; $year++){
 	$file1 = "$data_dir".'/Ind_data_files/angle'."$year".'.dat';
 	$file2 = "$data_dir".'/Ind_data_files/solar_panel'."$year".'.dat';
 

@@ -7,9 +7,22 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: Aug 27, 2012								#
+#	last update: Jan 09, 2013								#
 #												#
 #################################################################################################
+
+
+$file         = $ARGV[0];       #--- e.g., Data/Data_sensor/sensor_angle80
+$tfssbkt1_env = $ARGV[1];       #--- e.g., sensor_angle80_tfssbkt1_env.dat
+$tfssbkt2_env = $ARGV[2];
+$tpc_fsse_env = $ARGV[3];
+$comp_test    = $ARGV[4];	#--- if this is a test case, "test"
+
+chomp $file;
+chomp $tfssbkt1_env;
+chomp $tfssbkt2_env;
+chomp $tpc_fsse_env;
+chomp $comp_test;
 
 #----------------------------------------------------------
 #---- setting some quantities. these may change in future.
@@ -17,7 +30,13 @@ use PGPLOT;
 #
 #--- set directory paths
 #
-$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+if($comp_test =~ /test/i){
+#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+}else{
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+}
+
 open(FH, $dir_list);
 while(<FH>){
     chomp $_;
@@ -54,16 +73,6 @@ $tpc_opmax	= 294.1;
 #-------------------------------------------------------
 #---- finish settings
 #-------------------------------------------------------
-
-$file         = $ARGV[0];	#--- e.g., Data/Data_sensor/sensor_angle80
-$tfssbkt1_env = $ARGV[1];	#--- e.g., sensor_angle80_tfssbkt1_env.dat
-$tfssbkt2_env = $ARGV[2];
-$tpc_fsse_env = $ARGV[3];
-
-chomp $file;
-chomp $tfssbkt1_env;
-chomp $tfssbkt2_env;
-chomp $tpc_fsse_env;
 
 @time      = ();
 @tfssbkt1  = ();		# FSS BRACKET-1 TEMP (+Y)

@@ -6,15 +6,27 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Aug 27, 2012						#
+#		last update: Jan 09, 2013						#
 #											#
 #########################################################################################
 
 #
-#---set directory
+#--- test case; set this "test"
 #
 
-$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+$comp_test = $ARGV[0];
+chomp $comp_test;
+
+#
+#--- set directory
+#
+if($comp_test =~ /test/i){
+#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+}else{
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+}
+
 open(FH, $dir_list);
 while(<FH>){
     chomp $_;

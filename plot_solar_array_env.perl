@@ -7,14 +7,35 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: Aug 27, 2012								#
+#	last update: Jan 09, 2013								#
 #												#
 #################################################################################################
+
+$file         = $ARGV[0];       #--- e.g., $data_dir/Data/Data_solar_panel/solar_panel_angle80
+$sadany_env   = $ARGV[1];       #--- e.g., solar_panel_angle80_sadany_evn.dat
+$sadapy_env   = $ARGV[2];
+$solany_param = $ARGV[3];
+$solapy_param = $ARGV[4];
+$comp_test    = $ARGV[5];	#--- if this is a test, "test"
+
+chomp $file;
+chomp $sadany_env;
+chomp $sadapy_env;
+chomp $solany_param;
+chomp $solapy_param;
+chomp $comp_test;
 
 #
 #---- set directories
 #
-$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+
+if($comp_test =~ /test/i){
+#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+}else{
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+}
+
 open(FH, $dir_list);
 while(<FH>){
     chomp $_;
@@ -58,18 +79,6 @@ $solapy_opmax	= 330.2;
 #-------------------------------------------------------
 #---- finish settings
 #-------------------------------------------------------
-
-$file 	      = $ARGV[0];	#--- e.g., $data_dir/Data/Data_solar_panel/solar_panel_angle80
-$sadany_env   = $ARGV[1];	#--- e.g., solar_panel_angle80_sadany_evn.dat
-$sadapy_env   = $ARGV[2];
-$solany_param = $ARGV[3];
-$solapy_param = $ARGV[4];
-
-chomp $file;
-chomp $sadany_env;
-chomp $sadapy_env;
-chomp $solany_param;
-chomp $solapy_param;
 
 @time   = ();
 @sadany = ();		# -Y SADA

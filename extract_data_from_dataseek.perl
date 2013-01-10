@@ -9,14 +9,26 @@
 #													#
 #		author: t. isobe (tisobe@cfa.harvard.edu)						#
 #													#
-#		last update: Aug 27, 2012								#
+#		last update: Jan 09, 2013								#
 #													#
 #########################################################################################################
 
 #
-#---set directory
+#--- test case; set this "test"
 #
-$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+
+$comp_test = $ARGV[0];
+chomp $comp_test;
+
+#
+#--- set directory
+#
+if($comp_test =~ /test/i){
+#    $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
+    $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+}else{
+    $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+}
 open(FH, $dir_list);
 while(<FH>){
     chomp $_;
@@ -41,37 +53,55 @@ $this_year = 1900 + $uyear;
 $uyday++;
 
 #
-#--- create a list of files to find the last entry date
+#--- if this is a test case, extract the data of 2010
 #
 
-$input = `ls $data_dir/Ind_data_files/angle*.dat`;
-@list  = split(/\s+/, $input);
-$last  = pop (@list);
-
-open(FH, "$last");
-OUTER:
-while(<FH>){
-	chomp $_;
-	@atemp = split(/\s+/, $_);
-	if($atemp[0] =~ /\d/){		#---- this is format dependent; make sure that you do not change it!!
-		if($atemp[1] < 48902399){
-			next OUTER;
-		}
-		$last_date = $atemp[1];
-	}elsif($atemp[2] =~ /\d/){
-		if($atemp[2] < 48902399){
-			next OUTER;
-		}
-		$last_date = $atemp[2];
-	}
+if($comp_test =~ /test/i){
+        $this_year = 2010;
+        $uyday     = 365;
 }
-close(FH);
+
+#
+#--- create a list of files to find the last entry date
+#
+if($comp_test =~ /test/i){
+#
+#--- if it is a test, the data start from 2010,  Jan 1, 00:00:00
+#
+        $last_ydate = '2010:001:00:00:00';
+
+}else{
+
+	$input = `ls $data_dir/Ind_data_files/angle*.dat`;
+	@list  = split(/\s+/, $input);
+	$last  = pop (@list);
+	
+	open(FH, "$last");
+	OUTER:
+	while(<FH>){
+		chomp $_;
+		@atemp = split(/\s+/, $_);
+		if($atemp[0] =~ /\d/){		#---- this is format dependent; make sure that you do not change it!!
+			if($atemp[1] < 48902399){
+				next OUTER;
+			}
+			$last_date = $atemp[1];
+		}elsif($atemp[2] =~ /\d/){
+			if($atemp[2] < 48902399){
+				next OUTER;
+			}
+			$last_date = $atemp[2];
+		}
+	}
+	close(FH);
 
 #
 #--- convert the last entry date (in sec from 1998) to yyyy:ddd:hh:mm:ss format
 #
 
-$last_ydate = time1998_to_ydate($last_date);
+	$last_ydate = time1998_to_ydate($last_date);
+}
+
 @btemp      = split(/:/, $last_ydate);
 
 #

@@ -7,14 +7,29 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: Aug 27, 2012								#
+#	last update: Jan 09, 2013								#
 #												#
 #################################################################################################
 
+
+$file1 = $ARGV[0];	#---- ./Data_solar_panel/solar_panel_angle80_tpysada.dat etc.
+$file2 = $ARGV[1];	#---- ./Data_scelec/scelec_angle80_elbi_data etc.
+$comp_test = $ARGV[2];  #---- test case, if so set to "test"
+
+chomp $file1;
+chomp $file2;
+chomp $comp_test;
+
 #
-#--- set directories
+#--- set directory
 #
-$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+if($comp_test =~ /test/i){
+#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+}else{
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
+}
+
 open(FH, $dir_list);
 while(<FH>){
     chomp $_;
@@ -30,12 +45,6 @@ $sdsa_min = 265;
 $sdsa_max = 285;
 $elbi_min = 53;
 $elbi_max = 73;
-
-$file1 = $ARGV[0];	#---- ./Data_solar_panel/solar_panel_angle80_tpysada.dat etc.
-$file2 = $ARGV[1];	#---- ./Data_scelec/scelec_angle80_elbi_data etc.
-
-chomp $file1;
-chomp $file2;
 
 @time1 = ();
 @time2 = ();
