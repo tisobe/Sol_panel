@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env /usr/local/bin/perl
 use PGPLOT;
 
 #################################################################################################
@@ -7,7 +7,7 @@ use PGPLOT;
 #												#
 #	author: t. isobe (tisobe@cfa.harvard.edu)						#
 #												#
-#	last update: Jan 09, 2013								#
+#	last update: Jun 05, 2013								#
 #												#
 #################################################################################################
 
@@ -30,8 +30,7 @@ chomp $comp_test;
 #
 
 if($comp_test =~ /test/i){
-#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
-        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
 }else{
         $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
 }
@@ -703,7 +702,7 @@ pgclos();
 
 $out_gif = "env_plot.gif";
 
-system("echo ''|$op_dir/gs -sDEVICE=ppmraw  -r128x128 -q -NOPAUSE -sOutputFile=-  ./pgplot.ps|$op_dir/pnmcrop|$op_dir/pnmflip -r270 |$op_dir/ppmtogif > $out_gif");
+system("echo ''|gs -sDEVICE=ppmraw  -r128x128 -q -NOPAUSE -sOutputFile=-  ./pgplot.ps|pnmflip -r270 |ppmtogif > $out_gif");
 
 
 ########################################################

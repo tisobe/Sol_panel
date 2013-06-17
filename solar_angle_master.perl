@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env /usr/local/bin/perl
 
 #################################################################################################
 #												#
@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Jan 09, 2013							#
+#		last update: Jun 05, 2013							#
 #												#
 #################################################################################################
 
@@ -21,8 +21,7 @@ chomp $comp_test;
 #--- set directory
 #
 if($comp_test =~ /test/i){
-#	$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
-	$dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+	$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
 }else{
 	$dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
 }
@@ -62,11 +61,11 @@ system("$op_dir/perl  $script_dir/extract_data_from_dataseek.perl $comp_test");
 $test =`cat extract_test`;
 chomp $test;
 if($test == 0){
-	system("rm extract_test");
+	system("rm -rf extract_test");
 	print "\n\t\tNo new data. Exiting...\n\n";
 	exit 1;
 }
-system("rm extract_test");
+system("rm -rf extract_test");
 
 #
 #--- extract solar panel data
@@ -144,7 +143,7 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
 }
 
 
-system("rm pgplot.ps");
+system("rm -rf pgplot.ps");
 
 #
 #--- update the html page (date of update only)

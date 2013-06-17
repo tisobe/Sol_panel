@@ -1,19 +1,19 @@
-setenv HEADAS /soft/lheasoft/headas/x86_64-pc-linux;
-source $HEADAS/headas-init.csh
+source /home/mta/.ascrc -r 
 
-source /home/mta/.ascrc
-
-cd /data/mta/Script/Sol_panel_linux/Exc_linux
 rm -rf param
 mkdir param
 source /home/mta/bin/reset_param
+
+unsetenv PERLLIB
+unsetenv PERL5LIB
+
 set path = (/home/ascds/DS.release/bin/  $path)
-set path = (/home/ascds/DS.release/otsbin/  $path)
+set path = (/home/ascds/DS.release/ots/bin/ $path)
 
-perl /data/mta/Script/Sol_panel_linux/Sol_panel_script_linux/solar_angle_master.perl
+/usr/local/bin/perl /data/mta/Script/Sol_panel/Scripts/solar_angle_master.perl
 
-chgrp mtagroup /data/mta/Script/Sol_panel/Data/*
-chgrp mtagroup /data/mta/Script/Sol_panel/Data/*/*
+chgrp mtagroup /data/mta/Script/Sol_panel_linux/Data/*
+chgrp mtagroup /data/mta/Script/Sol_panel_linux/Data/*/*
 
-chgrp mtagroup /data/mta_www/mta_sol_panel/*
-chgrp mtagroup /data/mta_www/mta_sol_panel/Plots/*
+chgrp mtagroup /data/mta_www/mta_sol_panel_ds10/*
+chgrp mtagroup /data/mta_www/mta_sol_panel_ds10/Plots/*

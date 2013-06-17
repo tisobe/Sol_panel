@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env /usr/local/bin/perl
 
 #########################################################################################
 #											#
@@ -7,7 +7,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Jan 09, 2013						#
+#		last update: Jun 05, 2013						#
 #											#
 #########################################################################################
 
@@ -22,8 +22,7 @@ chomp $comp_test;
 #--- set directory
 #
 if($comp_test =~ /test/i){
-#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
-        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
 }else{
         $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
 }
@@ -71,12 +70,12 @@ foreach $angle (40, 60, 80, 100, 120, 140, 160){
                 if($chk > 0){
                         system("mv temp_out $name");
                 }else{
-                        system("rm temp_out");
+                        system("rm -rf  temp_out");
                 }
 #
 #--- find a moving average and an envelop for the data
 #
-		system("perl $script_dir/find_moving_avg.perl $name $arange $step $nterms $out ");
+		system("$op_dir/perl $script_dir/find_moving_avg.perl $name $arange $step $nterms $out ");
 	}
 }
 			

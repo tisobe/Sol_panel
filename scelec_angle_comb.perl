@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env /usr/local/bin/perl
 
 #################################################################################################
 #												#
@@ -7,7 +7,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Jan 09, 2013							#
+#		last update: Jun 05, 2013							#
 #												#
 #################################################################################################
 
@@ -29,8 +29,7 @@ chomp $comp_test;
 #--- set directory
 #
 if($comp_test =~ /test/i){
-#       $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
-        $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+        $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
 	$begin_year = 2010;
 }else{
         $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
@@ -50,7 +49,7 @@ close(FH);
 #
 $check = `ls `;
 if($check =~ /scelec_angle/){
-	system("rm scelec_angle*0");
+	system("rm -rf scelec_angle*0");
 }
 
 for($year = $begin_year; $year <= $this_year; $year++){

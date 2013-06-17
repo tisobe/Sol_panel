@@ -1,4 +1,4 @@
-#!/usr/bin/perl 
+#!/usr/bin/env /usr/local/bin/perl
 
 #########################################################################################################
 #													#
@@ -9,7 +9,7 @@
 #													#
 #		author: t. isobe (tisobe@cfa.harvard.edu)						#
 #													#
-#		last update: Jan 09, 2013								#
+#		last update: JUn 05, 2013								#
 #													#
 #########################################################################################################
 
@@ -24,8 +24,7 @@ chomp $comp_test;
 #--- set directory
 #
 if($comp_test =~ /test/i){
-#    $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
-    $dir_list = '/data/mta/Script/Sol_panel_linux/house_keeping/dir_list_test';
+    $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list_test';
 }else{
     $dir_list = '/data/mta/Script/Sol_panel/house_keeping/dir_list';
 }
@@ -157,7 +156,7 @@ if($file_chk !~ /$zip_file/){
 $ychk = 0;
 extract_data();
 
-system("rm test");
+system("rm -rf test");
 
 #################################################################################################
 ### extract_data: extract data from dataseeker                                                ###
@@ -175,7 +174,7 @@ sub extract_data{
 #
 #--- extract data using dataseeker
 #
-	system("dataseeker.pl infile=test outfile=temp.fits  search_crit=\"columns=pt_suncent_ang timestart=$start timestop=$stop\" "); 
+	system("dataseeker.pl infile=test outfile=temp.fits  search_crit=\"columns=pt_suncent_ang timestart=$start timestop=$stop\" loginFile=$house_keeping/loginfile "); 
 #
 #--- check whether there is any new data, first check whether the actually the data file is created
 #
@@ -204,7 +203,7 @@ sub extract_data{
 		}
 	}	
 	close(FH);
-	system("rm test_out");
+	system("rm -rf test_out");
 
 #
 #--- notify the main script that there is no new data
@@ -214,7 +213,7 @@ sub extract_data{
 			open(OUT2,">extract_test");
 			print OUT2 "0";
 			close(OUT2);
-			system("rm test");
+			system("rm -rf test");
 			exit 1;
 		}
 #
@@ -227,10 +226,10 @@ sub extract_data{
 			system("gzip -d $zip_file");
 			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
 			system("mv zout.fits $out_file");
-			system("rm temp.fits temp2.fits");
+			system("rm -rf temp.fits temp2.fits");
 		}else{
 			system("mv temp2.fits $out_file");
-			system("rm temp.fits");
+			system("rm -rf temp.fits");
 		}
 
 #
@@ -250,17 +249,17 @@ sub extract_data{
 #
 #--- extract data using dataseeker
 #
-		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tmysada_avg,_tpysada_avg,_tsamyt_avg,_tsapyt_avg timestart=$start timestop=$stop\" "); 
+		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tmysada_avg,_tpysada_avg,_tsamyt_avg,_tsapyt_avg timestart=$start timestop=$stop\" loginFile=$house_keeping/loginfile"); 
 		system("dmcopy \"temp.fits[cols time,tmysada_avg,tpysada_avg,tsamyt_avg,tsapyt_avg]\" outfile=temp2.fits");
 		if($chk == 0){
 			system("cp $zip_file $old_file");
 			system("gzip -d $zip_file");
 			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
 			system("mv zout.fits $out_file");
-			system("rm temp.fits temp2.fits");
+			system("rm -rf temp.fits temp2.fits");
 		}else{
 			system("mv temp2.fits $out_file");
-			system("rm temp.fits");
+			system("rm -rf temp.fits");
 		}
 
 #
@@ -280,17 +279,17 @@ sub extract_data{
 #
 #--- extract data using dataseeker
 #
-		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_elbi_avg,_elbv_avg,_obattpwr_avg,_ohrmapwr_avg,_oobapwr_avg  timestart=$start timestop=$stop\" "); 
+		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_elbi_avg,_elbv_avg,_obattpwr_avg,_ohrmapwr_avg,_oobapwr_avg  timestart=$start timestop=$stop\" loginFile=$house_keeping/loginfile "); 
 		system("dmcopy \"temp.fits[cols time,elbi_avg,elbv_avg,obattpwr_avg,ohrmapwr_avg,oobapwr_avg]\" outfile=temp2.fits");
 		if($chk == 0){
 			system("cp $zip_file $old_file");
 			system("gzip -d $zip_file");
 			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
 			system("mv zout.fits $out_file");
-			system("rm temp.fits temp2.fits");
+			system("rm -rf temp.fits temp2.fits");
 		}else{
 			system("mv temp2.fits $out_file");
-			system("rm temp.fits");
+			system("rm -rf temp.fits");
 		}
 
 #
@@ -310,17 +309,17 @@ sub extract_data{
 #
 #--- extract data using dataseeker
 #
-		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tfssbkt1_avg,_tfssbkt2_avg,_tpc_fsse_avg  timestart=$start timestop=$stop\" "); 
+		system("dataseeker.pl infile=test outfile=temp.fits search_crit=\"columns=_tfssbkt1_avg,_tfssbkt2_avg,_tpc_fsse_avg  timestart=$start timestop=$stop\" loginFile=$house_keeping/loginfile "); 
 		system("dmcopy \"temp.fits[cols time,tfssbkt1_avg,tfssbkt2_avg,tpc_fsse_avg]\" outfile=temp2.fits");
 		if($chk == 0){
 			system("cp $zip_file $old_file");
 			system("gzip -d $zip_file");
 			system("dmmerge \"$out_file,temp2.fits\" zout.fits outBlock='' columnList=''");
 			system("mv zout.fits $out_file");
-			system("rm temp.fits temp2.fits");
+			system("rm -rf temp.fits temp2.fits");
 		}else{
 			system("mv temp2.fits $out_file");
-			system("rm temp.fits");
+			system("rm -rf temp.fits");
 		}
 #
 #--- convert the file into ascii file

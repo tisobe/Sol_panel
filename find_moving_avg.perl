@@ -1,5 +1,5 @@
+#!/usr/bin/env /usr/local/bin/perl
 #!/usr/bin/perl
-
 #########################################################################################
 #											#
 #	find_moving_avg.perl: fit a moving average, a n-th degree polynomial,	 	#
