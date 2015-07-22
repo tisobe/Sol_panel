@@ -56,7 +56,7 @@
 #											#
 #	author: t. isobe (tisobe@cfa.harvard.edu)					#
 #											#
-#	last update: 08/24/2010								#
+#	last update: 04/02/2015								#
 #											#
 #########################################################################################
 
@@ -278,7 +278,8 @@ while($end < $last){
 		$diff = $sum2/$mcnt - $avg * $avg;
 		if($diff < 0){
 			$mcnt = 0;
-			next OUTER;
+#			next OUTER;
+            $diff = 0;
 		}
 		$std = sqrt($diff);
 		push(@mvavg,  $avg);

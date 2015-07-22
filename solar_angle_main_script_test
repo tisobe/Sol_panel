@@ -4,12 +4,6 @@ rm -rf param
 mkdir param
 source /home/mta/bin/reset_param
 
-unsetenv PERLLIB
-unsetenv PERL5LIB
-
-set path = (/home/ascds/DS.release/bin/  $path)
-set path = (/home/ascds/DS.release/ots/bin/ $path)
-
 cp -r /data/mta/Script/Sol_panel/house_keeping/Test_prep /data/mta/Script/Sol_panel/Test_out
 
 /usr/local/bin/perl /data/mta/Script/Sol_panel/Sol_panel_script_linux/solar_angle_master.perl test
